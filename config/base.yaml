@@ -9,9 +9,9 @@ seed:
   train: 10000
   val: 123
 
-micro_batch_size_per_gpu: 4  # Batch size for each GPU during training
-ppo_mini_batch_size: 16      # Batch size for PPO policy updates, it should be divisible by (micro_batch_size_per_gpu * n_gpus_per_node)
-model_path: Qwen/Qwen2.5-7B-Instruct
+micro_batch_size_per_gpu: 2  # Batch size for each GPU during training
+ppo_mini_batch_size: 32      # Batch size for PPO policy updates, it should be divisible by (micro_batch_size_per_gpu * n_gpus_per_node)
+model_path: Qwen/Qwen2.5-14B-Instruct
 enable_response_mask: True # Enabling response mask could improve stability of rollout/old_log_prob, as P(st|history) are no longer calculated in loss here. See https://docs.google.com/document/d/1bg7obeiKTExuHHBl5uOiSpec5uLDZ2Tgvxy6li5pHX4/edit?usp=sharing for more details.
 grpo_advantage_length_weight: False # if you do not enable this and critic/advantage_estimator is GRPO, and the critic/advantages/mean is too low, then you can try enabling this to encourage reasoning and forbid collapse
 
@@ -45,6 +45,7 @@ actor_rollout_ref:
   rollout:
     log_prob_micro_batch_size_per_gpu: ${micro_batch_size_per_gpu} # following micro_batch_size_per_gpu
     tensor_model_parallel_size: 4
+    data_parallel_size: 2
     max_model_len: 3600
     prompt_length: 1 # useless. Just put it here
     response_length: 400 # single-turn response length
@@ -58,7 +59,7 @@ actor_rollout_ref:
     val_kwargs:
       do_sample: True
       temperature: 0.5
-    tp_size_check: true
+    tp_size_check: False
 
 critic:
   ppo_mini_batch_size: ${ppo_mini_batch_size} # by default, ppo_mini_batch_size = train_batch_size / 4
@@ -93,7 +94,7 @@ trainer:
   total_training_steps: 200
   validation_steps: 1 # validation instances = validation_steps * val_env_groups * group_size
   val_before_train: True
-  n_gpus_per_node: 4
+  n_gpus_per_node: 8
   test_freq: 10
   generations_to_log_to_wandb: 
     train: 128 # TODO: will be implemented

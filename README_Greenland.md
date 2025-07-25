@@ -30,7 +30,7 @@ source ~/.bashrc
 ## Install RAGEN
 
 ```bash
-git clone https://github.com/ZihanWang314/RAGEN.git
+git clone https://github.com/WillDreamer/RAGEN.git
 cd RAGEN
 
 # Setup and download the dataset
