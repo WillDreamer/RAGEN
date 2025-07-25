@@ -166,14 +166,14 @@ def run_ppo(config) -> None:
     os.environ["ENSURE_CUDA_VISIBLE_DEVICES"] = os.environ.get('CUDA_VISIBLE_DEVICES', '')
     if not ray.is_initialized():
         # this is for local ray cluster
-        ray.init(runtime_env={
-            'env_vars': {
-                'TOKENIZERS_PARALLELISM': 'true',
-                'NCCL_DEBUG': 'WARN',
-                'VLLM_LOGGING_LEVEL': 'WARN',
-                "RAY_DEBUG": "legacy" # used here for simpler breakpoint()
-            }
-        })
+        # ray.init(runtime_env={
+        #     'env_vars': {
+        #         'TOKENIZERS_PARALLELISM': 'true',
+        #         'NCCL_DEBUG': 'WARN',
+        #         'VLLM_LOGGING_LEVEL': 'WARN',
+        #         "RAY_DEBUG": "legacy" # used here for simpler breakpoint()
+        #     }
+        # })
         ray.init(
             address="auto",  # 或 None（本地）
             runtime_env={
