@@ -174,6 +174,19 @@ def run_ppo(config) -> None:
                 "RAY_DEBUG": "legacy" # used here for simpler breakpoint()
             }
         })
+        ray.init(
+            address="auto",  # 或 None（本地）
+            runtime_env={
+                "env_vars": {
+                    "NCCL_SOCKET_IFNAME": "eth0",
+                    "NCCL_IB_DISABLE": "1",
+                    'TOKENIZERS_PARALLELISM': 'true',
+                    'NCCL_DEBUG': 'WARN',
+                    'VLLM_LOGGING_LEVEL': 'WARN',
+                    "WANDB_API_KEY": "ba70fcbc92808cc7a1750dd80ac3908295e6854f",
+                }
+            }
+        )
 
     runner = TaskRunner.remote()
     ray.get(runner.run.remote(config))

@@ -63,4 +63,23 @@ python train.py \
 ```
 For example, you can edit config/base.yaml to change the default parameters for your experiments, or create new custom environment settings at config/envs.yaml. This approach is particularly useful when you want to maintain different configurations for various experimental setups.
 
+## (optional) Ray cluster on Greenland
+```bash
+
+# 启动head
+conda activate ragen
+ray start --head --port=6379
+
+# 加入node
+conda activate ragen
+ray start --address='10.0.168.252:6379'
+
+# check
+ray status
+
+# 安装tmux
+sudo apt install -y tmux
+
+```
+
 
