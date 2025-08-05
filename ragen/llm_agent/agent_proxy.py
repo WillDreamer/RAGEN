@@ -148,7 +148,13 @@ class LLMAgentProxy:
 		for i in range(self.config.agent_proxy.max_turn):
 			lm_inputs: DataProto = ctx_manager.get_lm_inputs(env_outputs, prepare_for_update=False)
 			lm_inputs.meta_info = dataproto.meta_info # TODO: setup vllm early stop when max length is reached. make sure this can be done
+
+			#* vanilla rollout of LLM
 			lm_outputs: DataProto = self.generate_sequences(lm_inputs)
+
+			#* env_inputs: manage context in a list ['env_id', 'llm_raw_response', 'llm_response', 'actions'], len is mini_bs
+			#* 'actions':  Only the first MAX_ACTIONS actions are kept in the rollout
+			#* "llm_response" transforms "llm_raw_response" into <think>xx</think><answer>xx</answer>
 			env_inputs: List[Dict] = ctx_manager.get_env_inputs(lm_outputs)
 			env_outputs: List[Dict] = es_manager.step(env_inputs)
 			if len(env_outputs) == 0: # all finished
